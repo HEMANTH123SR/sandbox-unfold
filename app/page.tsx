@@ -104,7 +104,7 @@ export default function Home() {
 
             {user?.publicMetadata.bio ? (
               <>
-                <span className="text-sm my-2 text-white">
+                <span className="text-sm my-2 text-primary">
                   {user?.publicMetadata.bio as string}
                 </span>
               </>
