@@ -475,7 +475,7 @@ export const CreateHackathonPage = () => {
         <div className="text-black">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum in
           pariatur ipsam omnis perferendis voluptates ratione! Provident aliquam
-          maiores inventore, esse quam quis
+          maiores inventore, esse quam quis kkks
         </div>
       </div>
     </FormProvider>
