@@ -113,3 +113,9 @@ export const Footer = () => {
     </footer>
   );
 };
+
+// competition name
+// competition description
+// cover image
+// start date
+//
