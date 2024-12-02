@@ -237,7 +237,7 @@ export const CreateHackathonPage = () => {
           <Button
             variant="ghost"
             className="text-gray-400 hover:text-white"
-            onClick={() => router.push("/hackathon")}
+            onClick={() => router.push("/")}
           >
             ESC to quit
           </Button>

@@ -1,28 +1,25 @@
 import mongoose from "mongoose";
 
 // Schema for a Stamp
-const StampSchema = new mongoose.Schema(
-  {
-    hackerId: {
-      type: String,
-      ref: "User", // Assuming there is a User schema
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["Pending", "Approved", "Rejected"],
-      default: "Pending",
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    tokenUri: {
-      type: String,
-    },
+const StampSchema = new mongoose.Schema({
+  hackerId: {
+    type: String,
+    ref: "User", // Assuming there is a User schema
+    required: true,
   },
-  { _id: false }
-); // Prevent generating _id for subdocuments
+  status: {
+    type: String,
+    enum: ["Pending", "Approved", "Rejected"],
+    default: "Pending",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  tokenUri: {
+    type: String,
+  },
+}); // Prevent generating _id for subdocuments
 
 // Schema for a Hackathon
 const HackathonSchema = new mongoose.Schema(

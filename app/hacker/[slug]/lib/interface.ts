@@ -3,6 +3,7 @@ export interface StampRequest {
   hackerId: string;
   status: "Pending" | "Approved" | "Rejected";
   createdAt: string;
+  _id: string;
 }
 
 export interface Hackathon {
