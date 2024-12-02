@@ -3,20 +3,23 @@ import React from "react";
 import { hackerbold } from "@/fonts/font";
 import { AnimatePresence, motion } from "framer-motion";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
+import Link from "next/link";
 
 export interface EventCardProps {
   imageUrl: string;
   eventName: string;
   isOpened: boolean;
+  link: string;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
   imageUrl,
   eventName,
   isOpened,
+  link,
 }) => {
   return (
-    <div className={`flex flex-col mx-6 `}>
+    <Link href={`${link}`} className={`flex flex-col mx-6 `}>
       <EventCardImage imageUrl={imageUrl} eventName={eventName} />
       <div className="flex flex-row justify-between items-center mt-4">
         <h2
@@ -27,7 +30,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         </h2>
         {isOpened ? <button>open</button> : <button>closed</button>}
       </div>
-    </div>
+    </Link>
   );
 };
 
