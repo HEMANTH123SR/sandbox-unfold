@@ -32,7 +32,8 @@ export const deleteImage = async (id: string) => {
       id
     );
     console.log(`${id} deleted :: res :: `, res);
-  } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     console.log("appwrite :: deleteImage :: error :: ", err.message);
   }
 };
