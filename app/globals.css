@@ -93,3 +93,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+.passport-book {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.passport-book > div {
+  background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
+}
+
+.text-gold {
+  color: #CFB53B;
+}
+
+.border-gold {
+  border-color: #CFB53B;
+}
