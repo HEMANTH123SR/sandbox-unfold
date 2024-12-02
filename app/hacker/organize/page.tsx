@@ -43,7 +43,7 @@ const HackathonSchema = z.object({
   organizerId: z.string().min(1, "Organizer ID is required"),
 });
 
-export const CreateHackathonPage = () => {
+const CreateHackathonPage = () => {
   const { toast } = useToast();
   const router = useRouter();
   const { user } = useUser();
@@ -82,7 +82,9 @@ export const CreateHackathonPage = () => {
         const result = await createImage(file);
 
         if (result.status === "success") {
-          methods.setValue(type, result.id);
+          if (result.id) {
+            methods.setValue(type, result.id);
+          }
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64Image = reader.result as string;
@@ -204,7 +206,20 @@ export const CreateHackathonPage = () => {
     methods.trigger().then((isValid) => {
       if (isValid) {
         // If all fields are valid, submit the form
-        onSubmit(methods.getValues());
+        const formData = methods.getValues();
+        if (formData.date) {
+          onSubmit({
+            ...formData,
+            date: new Date(formData.date),
+            organizerId: formData.organizerId || "",
+          });
+        } else {
+          toast({
+            title: "Form Validation Error",
+            description: "Please select a valid date",
+            variant: "destructive",
+          });
+        }
       } else {
         // If validation fails, show error toast and log errors
         const errors = methods.formState.errors;
