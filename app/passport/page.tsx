@@ -10,7 +10,7 @@ import { NFTStampsPage } from './components/passport/NFTStampsPage';
 
 export default function Home() {
   const book = useRef(null);
-  const [ setPageNumber] = useState(0);  // Correctly destructured the state
+  const [, setPageNumber] = useState(0);  // Correctly destructured the state
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-8">
