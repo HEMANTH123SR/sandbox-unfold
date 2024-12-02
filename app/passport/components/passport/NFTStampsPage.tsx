@@ -1,7 +1,28 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { Page } from './pages/Page';
+import { Alchemy, Network } from "alchemy-sdk";
 
 export const NFTStampsPage = forwardRef<HTMLDivElement>((props, ref) => {
+  const config = {
+    apiKey: "OgX2oq12FWRTYy5zEJj9_5BHxL_JktB0",
+    network: Network.ETH_SEPOLIA,
+  };
+  const alchemy = new Alchemy(config);
+
+  const [stamp, setStamps] = useState<any>();
+
+
+  useEffect(()=>{
+    const getBadges=async()=>{
+      console.log("getting nft")
+      const nfts = await alchemy.nft.getNftsForOwner("0xb1F77169bd3e7374398d65543474a54d49065C01");
+      setStamps(nfts.ownedNfts)
+      console.log("nft: ", nfts.ownedNfts)
+    }
+
+    getBadges()
+  },[])
+
   const stamps = [
     {
       id: 1,
@@ -28,8 +49,8 @@ export const NFTStampsPage = forwardRef<HTMLDivElement>((props, ref) => {
       <div className="pt-10 px-2">
         <h2 className="text-lg font-bold text-amber-900 mb-4 uppercase tracking-wide">NFT Stamps</h2>
         
-        <div className="grid grid-cols-2 gap-3">
-          {stamps.map((stamp) => (
+        <div className="grid gap-3">
+          {/* {stamps.map((stamp) => (
             <div key={stamp.id} className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-600 to-amber-800 rounded blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
               <div className="relative bg-amber-50/50 rounded p-2">
@@ -42,7 +63,17 @@ export const NFTStampsPage = forwardRef<HTMLDivElement>((props, ref) => {
                 <p className="text-xs text-amber-800">{stamp.date}</p>
               </div>
             </div>
-          ))}
+          ))} */}
+          {stamp ?
+            // <div>{badges[0].image.cachedUrl}</div> 
+            <div className='grid grid-cols-12 gap-3'>{stamp.map(item=>
+              <>
+              <img src={item.image.cachedUrl} alt="" className='h-[8vh] col-span-3 rounded-lg' />
+              </>
+            )}</div>
+            :
+            <>loding...</>
+            }
         </div>
       </div>
     </Page>

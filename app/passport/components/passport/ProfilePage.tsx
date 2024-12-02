@@ -1,8 +1,48 @@
-import { forwardRef } from 'react';
+"use client"
+import { forwardRef, useEffect, useState } from 'react';
 import { Github, Linkedin, Mail, Twitter } from 'lucide-react';
 import { Page } from './pages/Page';
+import {ethers} from "ethers"
+import abi from "./abi.json"
+import { Hackathon} from "@/app/hacker/[slug]/lib/interface"
+import { Alchemy, Network } from "alchemy-sdk";
+
+
 
 export const ProfilePage = forwardRef<HTMLDivElement>((props, ref) => {
+  const [isloading,setIsLoading]=useState<Boolean>(true);
+const [userData,setData]=useState<Hackathon|null>(null);
+
+
+
+  const provider = new ethers.JsonRpcProvider("https://eth-sepolia.g.alchemy.com/v2/OgX2oq12FWRTYy5zEJj9_5BHxL_JktB0");
+  const contractAddress = "0x77135e67dAb7b43470ee5e97d418041DC9c05F05";
+  const privateKey = "10e82a868207c1fabe14201d66cca97c10b85bc328b52dde4f4f10de0b0a3fc8";
+  const wallet = new ethers.Wallet(privateKey).connect(provider);
+  const contract = new ethers.Contract(contractAddress, abi, provider) as any;
+
+  
+  
+
+  async function mintCheck() {
+    try {
+          const connectedContract = contract.connect(wallet);
+          const tx = await connectedContract.mintNFT(
+              "0xb1F77169bd3e7374398d65543474a54d49065C01", 
+              8, 
+              "https://silver-tricky-trout-945.mypinata.cloud/ipfs/QmRosoLFCzQ8uu1yHJBy2eZHYuoHFd7xsN6uA5cfsVv26S?pinataGatewayToken=xa1kv813KDFJ0B3ul8bJJt1pZYcwToJinFAmmTYSGSt_wTa7FWX7tBbH8niGgyxx", // Metadata URI
+              {
+                  gasLimit: 1000000
+              }
+          );
+
+          const receipt = await tx.wait();
+          console.log("Transaction successful! Hash:", receipt);
+      } catch (error) {
+          console.error("Transaction failed:", error);
+      }
+  }
+
   return (
     <Page ref={ref}>
       <div className="pt-10 px-2">
