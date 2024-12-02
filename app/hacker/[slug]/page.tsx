@@ -159,7 +159,7 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-4xl w-full px-6">
             <Link
-              href="/hackathons"
+              href="/"
               className="inline-block text-primary/60 hover:text-primary mb-8 transition-colors"
             >
               ← Back to Hackathons
