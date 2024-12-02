@@ -15,31 +15,37 @@ const eventArray: EventCardProps[] = [
     eventName: "CodeSprint 2024",
     imageUrl: "/gallery/one.webp",
     isOpened: true,
+    link: "/hackathon/674d390aca8a6abbb8cd65f8",
   },
   {
     eventName: "Innovators Hackathon",
     imageUrl: "/gallery/two.webp",
     isOpened: false,
+    link: "/hackathon/674d39dcca8a6abbb8cd65fd",
   },
   {
     eventName: "DevX Challenge",
     imageUrl: "/gallery/three.webp",
     isOpened: true,
+    link: "/hackathon/674d3b45ca8a6abbb8cd6611",
   },
   {
     eventName: "HackTheFuture",
     imageUrl: "/gallery/four.webp",
     isOpened: false,
+    link: "/hackathon/674d390aca8a6abbb8cd65f8",
   },
   {
     eventName: "TechFest Hackathon",
     imageUrl: "/gallery/five.webp",
     isOpened: true,
+    link: "/hackathon/674d3abdca8a6abbb8cd6607",
   },
   {
     eventName: "Build & Break 2024",
     imageUrl: "/gallery/six.webp",
     isOpened: true,
+    link: "/hackathon/674d3a4cca8a6abbb8cd6602",
   },
 ];
 
@@ -136,6 +142,7 @@ export default function Home() {
                     imageUrl={event.imageUrl}
                     eventName={event.eventName}
                     isOpened={event.isOpened}
+                    link={event.link}
                   />
                   <div className="border-b pb-8 mb-8 mx-6"></div>
                 </div>

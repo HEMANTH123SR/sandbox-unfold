@@ -127,7 +127,7 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
         <div className="max-w-md text-center space-y-4">
           <p className="text-red-400 text-xl font-light">{error}</p>
           <Link
-            href="/"
+            href="/hackathons"
             className="inline-block text-primary/60 hover:text-primary transition-colors"
           >
             Back to Hackathons
