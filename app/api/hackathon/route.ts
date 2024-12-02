@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/db/index";
-import { Hackathon } from "@/db/modules/hacker.model";
-import pinataSDK from "@pinata/sdk";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectToDatabase } from '@/db/index';
+import { Hackathon } from '@/db/modules/hacker.model';
+import pinataSDK from '@pinata/sdk';
 
 // Initialize Pinata
 const pinata = new pinataSDK(
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
     // Parse the request body
     const requestData = await req.json();
-    console.log("Received hackathon data", requestData);
+    console.log('Received hackathon data', requestData);
 
     // Destructure the required fields
     const {
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     } = requestData;
 
     if (userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     // Check if a hackathon with the same name already exists
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     if (existingHackathon) {
       return NextResponse.json(
         {
-          message: "A hackathon with this name already exists",
+          message: 'A hackathon with this name already exists',
           nameInUse: true,
         },
         { status: 400 }
@@ -55,9 +55,7 @@ export async function POST(req: NextRequest) {
     let pinataMetadataUri = null;
     try {
       const metadata = {
-        attributes: [
-          { trait_type: "Organizer ID", value: organizerId },
-        ],
+        attributes: [{ trait_type: 'Organizer ID', value: organizerId }],
         description: description,
         name: name,
         date: date, // Original date
@@ -74,13 +72,15 @@ export async function POST(req: NextRequest) {
       ipfsHash = pinataResponse.IpfsHash;
       // Construct the Pinata metadata URI
       pinataMetadataUri = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`;
-      console.log("Pinata Metadata URI:", pinataMetadataUri);
+      console.log('Pinata Metadata URI:', pinataMetadataUri);
+      return NextResponse.json({ nftURI: pinataMetadataUri });
     } catch (ipfsError) {
-      console.error("IPFS Upload Error:", ipfsError);
+      console.error('IPFS Upload Error:', ipfsError);
       return NextResponse.json(
         {
-          message: "Failed to upload metadata to IPFS",
-          error: ipfsError instanceof Error ? ipfsError.message : "Unknown error",
+          message: 'Failed to upload metadata to IPFS',
+          error:
+            ipfsError instanceof Error ? ipfsError.message : 'Unknown error',
         },
         { status: 500 }
       );
@@ -103,11 +103,11 @@ export async function POST(req: NextRequest) {
     // Save the hackathon to the database
     const savedHackathon = await newHackathon.save();
 
-    console.log("Hackathon creation response", savedHackathon);
+    console.log('Hackathon creation response', savedHackathon);
 
     return NextResponse.json(
       {
-        message: "Hackathon created successfully",
+        message: 'Hackathon created successfully',
         hackathonId: savedHackathon._id,
         name: savedHackathon.name,
         ipfsHash: ipfsHash,
@@ -118,11 +118,11 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Hackathon creation error:", error);
+    console.error('Hackathon creation error:', error);
     return NextResponse.json(
       {
-        message: "Hackathon creation failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        message: 'Hackathon creation failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
