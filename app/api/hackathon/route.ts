@@ -73,7 +73,6 @@ export async function POST(req: NextRequest) {
       // Construct the Pinata metadata URI
       pinataMetadataUri = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`;
       console.log('Pinata Metadata URI:', pinataMetadataUri);
-      return NextResponse.json({ nftURI: pinataMetadataUri });
     } catch (ipfsError) {
       console.error('IPFS Upload Error:', ipfsError);
       return NextResponse.json(
@@ -95,7 +94,12 @@ export async function POST(req: NextRequest) {
       organizerId,
       cover,
       stamp: stampUri, // Use the Appwrite stamp URI
-      stampRequests: [], // Initialize empty stamp requests array
+      stampRequests: [
+        {
+          hackerId: organizerId,  // Assign hackerId (this could be the organizer or user)
+          tokenUri: pinataMetadataUri, // Store the Pinata metadata URI in tokenUri
+        },
+      ],
       ipfsMetadataHash: ipfsHash, // Store IPFS hash if upload was successful
       pinataMetadataUri: pinataMetadataUri, // Store Pinata metadata URI
     });
@@ -112,7 +116,6 @@ export async function POST(req: NextRequest) {
         name: savedHackathon.name,
         ipfsHash: ipfsHash,
         pinataMetadataUri: pinataMetadataUri, // This URI can be used to mint NFTs
-        // You can add a direct link to the metadata for easy sharing
         metadataLink: `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
       },
       { status: 201 }
