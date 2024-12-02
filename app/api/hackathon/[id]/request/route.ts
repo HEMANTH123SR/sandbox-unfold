@@ -50,7 +50,8 @@ export async function POST(
 
     // Check if a stamp request from this hacker already exists
     const existingStampRequest = existingHackathon.stampRequests.find(
-      (request) => request.hackerId === hackerId
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (request: { hackerId: any }) => request.hackerId === hackerId
     );
 
     if (existingStampRequest) {

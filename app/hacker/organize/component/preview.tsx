@@ -30,7 +30,7 @@ const HackathonPreview: React.FC<HackathonPreviewProps> = ({
               src={coverImage}
               alt="Hackathon Cover"
               layout="fill"
-              objectCover="cover"
+              objectFit="cover"
               className="w-full h-64 object-cover"
             />
           ) : (
@@ -46,7 +46,7 @@ const HackathonPreview: React.FC<HackathonPreviewProps> = ({
                 src={stampImage}
                 alt="Hackathon Stamp"
                 layout="fill"
-                objectCover="cover"
+                objectFit="cover"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -93,5 +93,4 @@ const HackathonPreview: React.FC<HackathonPreviewProps> = ({
     </div>
   );
 };
-
 export default HackathonPreview;
