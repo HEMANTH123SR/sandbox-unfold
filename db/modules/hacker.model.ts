@@ -16,7 +16,7 @@ const StampSchema = new mongoose.Schema({
     default: Date.now,
   },
   tokenUri: {
-    type: String,
+    type: String,  // This will store the Pinata metadata URI
   },
 }); // Prevent generating _id for subdocuments
 
