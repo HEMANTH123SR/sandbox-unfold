@@ -120,7 +120,13 @@ export default function Home() {
 
             <div className="border-[#42454A] border-t py-2 my-2"></div>
 
-            <Button variant={"outline"} className="text-xl uppercase">
+            <Button
+              variant={"outline"}
+              className="text-xl uppercase"
+              onClick={() => {
+                router.push("/passport");
+              }}
+            >
               Go To Passport
             </Button>
           </div>
