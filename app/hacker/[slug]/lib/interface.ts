@@ -1,7 +1,7 @@
 // Interfaces for Hackathon and related types
 export interface StampRequest {
   hackerId: string;
-  status: "Pending" | "Approved" | "Rejected";
+  status: "pending" | "approved" | "rejected";
   createdAt: string;
   _id: string;
 }

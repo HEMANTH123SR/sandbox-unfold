@@ -6,12 +6,13 @@ import { Hackathon } from "@/app/hacker/[slug]/lib/interface";
 import { getImage } from "@/lib/appwrite";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
 interface HackathonPageProps {
   params: { slug: string };
 }
 
 const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
+  const router = useRouter();
   const { user } = useUser();
   const userid = user?.id;
   const [hackathon, setHackathon] = useState<Hackathon | null>(null);
@@ -69,7 +70,8 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
       }
 
       const updatedHackathon = await response.json();
-      setHackathon(updatedHackathon);
+      console.log("updated hackathon:", updatedHackathon);
+      // setHackathon(updatedHackathon);
       setRequestStatus("idle");
     } catch (err) {
       console.error(err);
@@ -81,9 +83,9 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
     stampRequestId: string,
     status: "Approved" | "Rejected"
   ) => {
-    if (!hackathon) return;
-
     try {
+      console.log("stamp request id:", stampRequestId);
+
       const response = await fetch(`/api/hackathon/${params.slug}`, {
         method: "PATCH",
         headers: {
@@ -97,7 +99,9 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
       }
 
       const updatedData = await response.json();
+
       setHackathon(updatedData.hackathon);
+      router.refresh();
     } catch (err) {
       console.error(err);
       setError("Failed to update stamp request status");
@@ -184,9 +188,10 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
           </div>
           <div>
             <h3 className="text-primary/60 text-sm mb-1">Date</h3>
-            <p className="text-lg font-medium">
+            {/* <p className="text-lg font-medium">
               {format(new Date(hackathon.date), "MMMM dd, yyyy")}
-            </p>
+            </p> */}
+            {hackathon.date && <p>{hackathon.date.slice(0, 10)}</p>}
           </div>
           <div>
             <h3 className="text-primary/60 text-sm mb-1">Participants</h3>
@@ -210,63 +215,75 @@ const HackathonPage: React.FC<HackathonPageProps> = ({ params }) => {
             <h2 className="text-2xl font-bold mb-8">Stamp Requests</h2>
             {hackathon.stampRequests.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {hackathon.stampRequests.map((stamp, id) => (
-                  <div
-                    key={id}
-                    className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex flex-col">
-                        <span className="font-medium text-primary">
-                          {stamp.hackerId}
-                        </span>
-                        <span className="text-sm text-primary/60">
-                          {format(
-                            new Date(stamp.createdAt),
-                            "MMMM dd, yyyy HH:mm"
-                          )}
-                        </span>
-                      </div>
+                {hackathon.stampRequests.map(
+                  (stamp) => (
+                    console.log("stamp:", stamp),
+                    (
+                      <div
+                        key={stamp._id}
+                        className="p-5 border-slate-600 w-full "
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-primary">
+                              {stamp.hackerId}
+                            </span>
+                            <span className="text-sm text-primary/60">
+                              {format(
+                                new Date(stamp.createdAt),
+                                "MMMM dd, yyyy HH:mm"
+                              )}
+                            </span>
+                          </div>
 
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`
-                            px-3 py-1 rounded-full text-xs font-medium
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className={`
+                            px-3 py-1 rounded-full text-xs font-medium capitalize
                             ${
-                              stamp.status === "Approved"
+                              stamp.status === "approved"
                                 ? "bg-green-500/10 text-green-400"
-                                : stamp.status === "Pending"
+                                : stamp.status === "pending"
                                 ? "bg-yellow-500/10 text-yellow-400"
                                 : "bg-red-500/10 text-red-400"
                             }
                           `}
-                        >
-                          {stamp.status}
-                        </span>
-                        {stamp.status === "Pending" && (
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() =>
-                                updateStampRequestStatus(stamp._id, "Approved")
-                              }
-                              className="bg-green-500/20 text-green-400 px-2 py-1 rounded-lg hover:bg-green-500/30 transition-colors text-xs"
                             >
-                              Approve
-                            </button>
-                            <button
-                              onClick={() =>
-                                updateStampRequestStatus(stamp._id, "Rejected")
-                              }
-                              className="bg-red-500/20 text-red-400 px-2 py-1 rounded-lg hover:bg-red-500/30 transition-colors text-xs"
-                            >
-                              Reject
-                            </button>
+                              {stamp.status}
+                            </span>
+
+                            {stamp.status === "pending" && (
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() =>
+                                    updateStampRequestStatus(
+                                      stamp.hackerId,
+                                      "Approved"
+                                    )
+                                  }
+                                  className="bg-green-500/20 text-green-400 px-2 py-1 rounded-lg hover:bg-green-500/30 transition-colors text-xs"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    updateStampRequestStatus(
+                                      stamp.hackerId,
+                                      "Rejected"
+                                    )
+                                  }
+                                  className="bg-red-500/20 text-red-400 px-2 py-1 rounded-lg hover:bg-red-500/30 transition-colors text-xs"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    )
+                  )
+                )}
               </div>
             ) : (
               <div className="text-center text-primary/60">

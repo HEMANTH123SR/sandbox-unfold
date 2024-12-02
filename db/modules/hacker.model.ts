@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 const StampSchema = new mongoose.Schema({
   hackerId: {
     type: String,
-    ref: "User", // Assuming there is a User schema
     required: true,
   },
   status: {
