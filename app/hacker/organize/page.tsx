@@ -1,46 +1,46 @@
-"use client";
-import React, { useState } from "react";
-import { z } from "zod";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { Card } from "@/components/ui/card";
+'use client';
+import React, { useState } from 'react';
+import { z } from 'zod';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
+import { Card } from '@/components/ui/card';
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { createImage } from "@/lib/appwrite";
-import { Loader2, CalendarIcon } from "lucide-react";
-import { newAgeFontBold } from "@/fonts/font";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/popover';
+import { createImage } from '@/lib/appwrite';
+import { Loader2, CalendarIcon } from 'lucide-react';
+import { newAgeFontBold } from '@/fonts/font';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@clerk/nextjs';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 // Updated Hackathon Schema with past date validation
 const HackathonSchema = z.object({
-  name: z.string().min(3, "Hackathon name must be at least 3 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
+  name: z.string().min(3, 'Hackathon name must be at least 3 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters'),
   date: z
     .date({
-      required_error: "Please select a valid past date",
-      invalid_type_error: "Invalid date",
+      required_error: 'Please select a valid past date',
+      invalid_type_error: 'Invalid date',
     })
-    .refine((val) => val < new Date(), "Please select a valid past date"),
-  location: z.string().min(3, "Location must be at least 3 characters"),
-  cover: z.string().min(1, "Cover image is required"),
-  organizerId: z.string().min(1, "Organizer ID is required"),
+    .refine((val) => val < new Date(), 'Please select a valid past date'),
+  location: z.string().min(3, 'Location must be at least 3 characters'),
+  cover: z.string().min(1, 'Cover image is required'),
+  organizerId: z.string().min(1, 'Organizer ID is required'),
 });
 
 const CreateHackathonPage = () => {
@@ -60,19 +60,19 @@ const CreateHackathonPage = () => {
   const methods = useForm({
     resolver: zodResolver(HackathonSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       date: undefined,
-      location: "",
-      cover: "",
-      stamp: "",
+      location: '',
+      cover: '',
+      stamp: '',
       organizerId: user?.id,
     },
   });
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "cover" | "stamp"
+    type: 'cover' | 'stamp'
   ) => {
     const file = event.target.files?.[0];
     setImageErrors((prev) => ({ ...prev, [type]: undefined }));
@@ -88,7 +88,7 @@ const CreateHackathonPage = () => {
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64Image = reader.result as string;
-            if (type === "cover") {
+            if (type === 'cover') {
               setCoverImage(base64Image);
             } else {
               setStampImage(base64Image);
@@ -98,14 +98,14 @@ const CreateHackathonPage = () => {
         } else {
           setImageErrors((prev) => ({
             ...prev,
-            [type]: "Failed to upload image. Please try again.",
+            [type]: 'Failed to upload image. Please try again.',
           }));
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setImageErrors((prev) => ({
           ...prev,
-          [type]: "Error uploading image. Please try again.",
+          [type]: 'Error uploading image. Please try again.',
         }));
       }
     }
@@ -114,21 +114,21 @@ const CreateHackathonPage = () => {
   const onSubmit = async (data: z.infer<typeof HackathonSchema>) => {
     if (!user?.id) {
       toast({
-        title: "Authentication Required",
-        description: "Please sign in to create a hackathon",
-        variant: "destructive",
+        title: 'Authentication Required',
+        description: 'Please sign in to create a hackathon',
+        variant: 'destructive',
       });
       return;
     }
 
-    console.log("Form data:", data);
+    console.log('Form data:', data);
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/hackathon", {
-        method: "POST",
+      const response = await fetch('/api/hackathon', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ...data,
@@ -136,29 +136,31 @@ const CreateHackathonPage = () => {
         }),
       });
 
+      console.log('response: ', response);
+
       const result = await response.json();
 
       if (!response.ok) {
         toast({
-          title: "Error",
-          description: result.message || "Failed to create hackathon",
-          variant: "destructive",
+          title: 'Error',
+          description: result.message || 'Failed to create hackathon',
+          variant: 'destructive',
         });
         return;
       }
 
       toast({
-        title: "Success",
-        description: "Hackathon created successfully",
+        title: 'Success',
+        description: 'Hackathon created successfully',
       });
 
       router.push(`/hacker/${result.hackathonId}`);
     } catch (error) {
-      console.error("Hackathon creation error:", error);
+      console.error('Hackathon creation error:', error);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -167,41 +169,41 @@ const CreateHackathonPage = () => {
 
   const formFields = [
     {
-      type: "cover",
+      type: 'cover',
       label: "Let's start with a cover image",
-      description: "Choose an image that represents your hackathon",
+      description: 'Choose an image that represents your hackathon',
     },
     {
-      type: "stamp",
-      label: "Now, add a stamp image",
+      type: 'stamp',
+      label: 'Now, add a stamp image',
       description: "This will be used as your hackathon's badge",
     },
     {
-      type: "name",
+      type: 'name',
       label: "What's your hackathon called?",
-      description: "Give it a memorable name",
+      description: 'Give it a memorable name',
     },
     {
-      type: "description",
-      label: "Describe your hackathon",
-      description: "Tell us what makes it special",
+      type: 'description',
+      label: 'Describe your hackathon',
+      description: 'Tell us what makes it special',
     },
     {
-      type: "date",
-      label: "When did it happen?",
-      description: "Select the date of your hackathon",
+      type: 'date',
+      label: 'When did it happen?',
+      description: 'Select the date of your hackathon',
     },
     {
-      type: "location",
-      label: "Where did it take place?",
-      description: "Enter the location or platform",
+      type: 'location',
+      label: 'Where did it take place?',
+      description: 'Enter the location or platform',
     },
   ];
 
   const currentField = formFields[currentStep];
 
   const handleFinalSubmit = () => {
-    console.log("Final form data:", methods.getValues());
+    console.log('Final form data:', methods.getValues());
     // Trigger validation for all fields
     methods.trigger().then((isValid) => {
       if (isValid) {
@@ -228,16 +230,16 @@ const CreateHackathonPage = () => {
         const errorMessages = Object.values(errors)
           .map((error) => error.message)
           .filter(Boolean)
-          .join(", ");
+          .join(', ');
 
         toast({
-          title: "Form Validation Error",
-          description: errorMessages || "Please check your form inputs",
-          variant: "destructive",
+          title: 'Form Validation Error',
+          description: errorMessages || 'Please check your form inputs',
+          variant: 'destructive',
         });
 
         // Log detailed errors for debugging
-        console.error("Form Validation Errors:", errors);
+        console.error('Form Validation Errors:', errors);
       }
     });
   };
@@ -252,7 +254,7 @@ const CreateHackathonPage = () => {
           <Button
             variant="ghost"
             className="text-gray-400 hover:text-white"
-            onClick={() => router.push("/")}
+            onClick={() => router.push('/')}
           >
             ESC to quit
           </Button>
@@ -290,9 +292,9 @@ const CreateHackathonPage = () => {
                   Creating...
                 </>
               ) : currentStep === formFields.length - 1 ? (
-                "↵ Submit"
+                '↵ Submit'
               ) : (
-                "↓ Next"
+                '↓ Next'
               )}
             </Button>
           </div>
@@ -311,14 +313,14 @@ const CreateHackathonPage = () => {
 
             <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
               <div className="transition-all duration-300">
-                {currentField.type === "cover" && (
+                {currentField.type === 'cover' && (
                   <FormItem className="space-y-6">
                     <FormControl>
                       <div className="relative">
                         <Input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => handleImageUpload(e, "cover")}
+                          onChange={(e) => handleImageUpload(e, 'cover')}
                           className="text-lg p-8 border-2 border-dashed border-gray-700 rounded-lg bg-transparent hover:border-gray-500 transition-colors cursor-pointer"
                         />
                       </div>
@@ -342,14 +344,14 @@ const CreateHackathonPage = () => {
                   </FormItem>
                 )}
 
-                {currentField.type === "stamp" && (
+                {currentField.type === 'stamp' && (
                   <FormItem className="space-y-6">
                     <FormControl>
                       <div className="relative">
                         <Input
                           type="file"
                           accept="image/*"
-                          onChange={(e) => handleImageUpload(e, "stamp")}
+                          onChange={(e) => handleImageUpload(e, 'stamp')}
                           className="text-lg p-8 border-2 border-dashed border-gray-700 rounded-lg bg-transparent hover:border-gray-500 transition-colors cursor-pointer"
                         />
                       </div>
@@ -373,7 +375,7 @@ const CreateHackathonPage = () => {
                   </FormItem>
                 )}
 
-                {currentField.type === "name" && (
+                {currentField.type === 'name' && (
                   <FormField
                     control={methods.control}
                     name="name"
@@ -392,7 +394,7 @@ const CreateHackathonPage = () => {
                   />
                 )}
 
-                {currentField.type === "description" && (
+                {currentField.type === 'description' && (
                   <FormField
                     control={methods.control}
                     name="description"
@@ -411,7 +413,7 @@ const CreateHackathonPage = () => {
                   />
                 )}
 
-                {currentField.type === "date" && (
+                {currentField.type === 'date' && (
                   <FormField
                     control={methods.control}
                     name="date"
@@ -421,22 +423,22 @@ const CreateHackathonPage = () => {
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
-                                variant={"outline"}
+                                variant={'outline'}
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal text-4xl h-auto py-4 px-0 bg-transparent border-none hover:bg-transparent hover:text-primary",
-                                  !field.value && "text-gray-500"
+                                  'w-full pl-3 text-left font-normal text-4xl h-auto py-4 px-0 bg-transparent border-none hover:bg-transparent hover:text-primary',
+                                  !field.value && 'text-gray-500'
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, 'PPP')
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
                                 <CalendarIcon
                                   className="ml-auto  text-gray-500"
                                   style={{
-                                    width: "2rem",
-                                    height: "2rem",
+                                    width: '2rem',
+                                    height: '2rem',
                                   }}
                                   strokeWidth={2}
                                 />
@@ -453,7 +455,7 @@ const CreateHackathonPage = () => {
                               }}
                               disabled={(date) =>
                                 date > new Date() ||
-                                date < new Date("1900-01-01")
+                                date < new Date('1900-01-01')
                               }
                               initialFocus
                             />
@@ -465,7 +467,7 @@ const CreateHackathonPage = () => {
                   />
                 )}
 
-                {currentField.type === "location" && (
+                {currentField.type === 'location' && (
                   <FormField
                     control={methods.control}
                     name="location"
